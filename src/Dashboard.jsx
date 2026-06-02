@@ -27,6 +27,15 @@ function Dashboard({ clientData, onLogout }) {
 
   const formatDate = (dateString) => {
     if (!dateString) return '-'
+    
+    // Si la fecha viene en formato YYYY-MM-DD, procesarla correctamente
+    if (typeof dateString === 'string' && dateString.includes('-')) {
+      const [year, month, day] = dateString.split('-')
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
+      return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    }
+    
+    // Para otros formatos, usar Date normal
     const date = new Date(dateString)
     return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' })
   }
