@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { LogOut, Plus, Edit2, Trash2, X } from 'lucide-react'
+import { supabase } from './supabaseClient'
 import './Admin.css'
 
 function Admin() {
@@ -23,13 +24,40 @@ function Admin() {
   })
 
   useEffect(() => {
-    const savedClients = localStorage.getItem('clients')
-    if (savedClients) {
-      setClients(JSON.parse(savedClients))
-    }
+    loadClients()
   }, [])
 
-  const saveClients = (newClients) => {
+  const loadClients = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('clients')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        console.error('Error loading clients:', error)
+        // Fallback a localStorage si falla Supabase
+        const savedClients = localStorage.getItem('clients')
+        if (savedClients) {
+          setClients(JSON.parse(savedClients))
+        }
+      } else {
+        setClients(data || [])
+        // Sincronizar con localStorage como backup
+        localStorage.setItem('clients', JSON.stringify(data || []))
+      }
+    } catch (error) {
+      console.error('Error connecting to Supabase:', error)
+      // Fallback a localStorage
+      const savedClients = localStorage.getItem('clients')
+      if (savedClients) {
+        setClients(JSON.parse(savedClients))
+      }
+    }
+  }
+
+  const saveClients = async (newClients) => {
+    // Guardar en localStorage como backup
     localStorage.setItem('clients', JSON.stringify(newClients))
     setClients(newClients)
   }
@@ -88,29 +116,75 @@ function Admin() {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     
-    if (editingClient) {
-      const updatedClients = clients.map(c => 
-        c.id === editingClient.id ? { ...formData, id: editingClient.id } : c
-      )
-      saveClients(updatedClients)
-    } else {
-      const newClient = {
-        ...formData,
-        id: Date.now()
+    try {
+      if (editingClient) {
+        // Actualizar cliente existente
+        const { error } = await supabase
+          .from('clients')
+          .update({
+            rut: formData.rut,
+            fecha1: formData.fecha1 || null,
+            fecha2: formData.fecha2 || null,
+            fecha3: formData.fecha3 || null,
+            fecha4: formData.fecha4 || null,
+            estado1: formData.estado1,
+            estado2: formData.estado2,
+            estado3: formData.estado3,
+            estado4: formData.estado4,
+            url_licencia: formData.urlLicencia || null
+          })
+          .eq('id', editingClient.id)
+
+        if (error) throw error
+        
+        await loadClients()
+      } else {
+        // Crear nuevo cliente
+        const { error } = await supabase
+          .from('clients')
+          .insert([{
+            rut: formData.rut,
+            fecha1: formData.fecha1 || null,
+            fecha2: formData.fecha2 || null,
+            fecha3: formData.fecha3 || null,
+            fecha4: formData.fecha4 || null,
+            estado1: formData.estado1,
+            estado2: formData.estado2,
+            estado3: formData.estado3,
+            estado4: formData.estado4,
+            url_licencia: formData.urlLicencia || null
+          }])
+
+        if (error) throw error
+        
+        await loadClients()
       }
-      saveClients([...clients, newClient])
+      
+      closeModal()
+    } catch (error) {
+      console.error('Error saving client:', error)
+      alert('Error al guardar el cliente: ' + error.message)
     }
-    
-    closeModal()
   }
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (confirm('¿Está seguro de eliminar este cliente?')) {
-      const updatedClients = clients.filter(c => c.id !== id)
-      saveClients(updatedClients)
+      try {
+        const { error } = await supabase
+          .from('clients')
+          .delete()
+          .eq('id', id)
+
+        if (error) throw error
+        
+        await loadClients()
+      } catch (error) {
+        console.error('Error deleting client:', error)
+        alert('Error al eliminar el cliente: ' + error.message)
+      }
     }
   }
 
@@ -264,11 +338,11 @@ function Admin() {
                       </span>
                     </div>
                   </div>
-                  {client.urlLicencia && (
+                  {client.url_licencia && (
                     <div className="card-field">
                       <span className="field-label">Licencia:</span>
                       <span className="field-value">
-                        <a href={client.urlLicencia} target="_blank" rel="noopener noreferrer" className="link-licencia">
+                        <a href={client.url_licencia} target="_blank" rel="noopener noreferrer" className="link-licencia">
                           Ver documento
                         </a>
                       </span>

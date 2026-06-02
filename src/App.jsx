@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { User, Lock, Eye, EyeOff } from 'lucide-react'
 import Dashboard from './Dashboard'
+import { supabase } from './supabaseClient'
 import './App.css'
 
 function App({ navigate }) {
@@ -33,24 +34,42 @@ function App({ navigate }) {
     setError('')
     setShowPasswordHint(false)
 
-    // Buscar cliente en localStorage
-    setTimeout(() => {
-      const savedClients = localStorage.getItem('clients')
-      if (savedClients) {
-        const clients = JSON.parse(savedClients)
-        const client = clients.find(c => c.rut === rut.trim())
-        
-        if (client) {
-          setClientData(client)
-          setIsLoggedIn(true)
+    try {
+      // Buscar cliente en Supabase
+      const { data, error } = await supabase
+        .from('clients')
+        .select('*')
+        .eq('rut', rut.trim())
+        .single()
+
+      if (error) {
+        // Si falla Supabase, buscar en localStorage como fallback
+        console.log('Trying localStorage fallback...')
+        const savedClients = localStorage.getItem('clients')
+        if (savedClients) {
+          const clients = JSON.parse(savedClients)
+          const client = clients.find(c => c.rut === rut.trim())
+          
+          if (client) {
+            setClientData(client)
+            setIsLoggedIn(true)
+          } else {
+            setError('RUT no encontrado en el sistema')
+          }
         } else {
           setError('RUT no encontrado en el sistema')
         }
       } else {
-        setError('No hay clientes registrados')
+        // Cliente encontrado en Supabase
+        setClientData(data)
+        setIsLoggedIn(true)
       }
+    } catch (error) {
+      console.error('Error during login:', error)
+      setError('Error al conectar con el servidor')
+    } finally {
       setLoading(false)
-    }, 500)
+    }
   }
 
   const handleLogout = () => {

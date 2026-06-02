@@ -82,9 +82,9 @@ function Dashboard({ clientData, onLogout }) {
   }
 
   const handleDownloadLicencia = () => {
-    if (clientData.urlLicencia) {
+    if (clientData.url_licencia) {
       // Abrir el enlace en una nueva pestaña
-      window.open(clientData.urlLicencia, '_blank')
+      window.open(clientData.url_licencia, '_blank')
       setMenuOpen(false)
     } else {
       alert('No hay una licencia médica disponible para descargar. Por favor contacte al administrador.')
