@@ -1,4 +1,4 @@
-# Guía de Seguridad - Sistema COMPIN
+# Guía de Seguridad
 
 ## 🔒 Datos Sensibles Protegidos
 

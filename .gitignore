@@ -67,6 +67,9 @@ Thumbs.db
 # Supabase local
 .supabase
 
+# Vercel
+.vercel
+
 # Backup files
 *.backup
 *.bak

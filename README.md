@@ -1,4 +1,4 @@
-# Sistema de Seguimiento de Licencias Médicas - COMPIN
+# Sistema de Seguimiento de Licencias Médicas
 
 Sistema web para el seguimiento del estado de licencias médicas con panel de administración y vista para clientes.
 
@@ -109,6 +109,22 @@ VITE_SUPABASE_ANON_KEY=tu_clave_anon_de_supabase
 - ✅ Sin credenciales hardcodeadas en el código
 - ✅ URLs de licencias externas (no almacenamiento de archivos sensibles)
 
+## 🚀 Despliegue en Vercel
+
+Para desplegar en Vercel, consulta la guía completa en `DEPLOY-VERCEL.md`
+
+**Resumen rápido:**
+1. Push tu código a GitHub
+2. Importa el proyecto en Vercel
+3. Configura las variables de entorno
+4. Deploy automático
+
+El archivo `vercel.json` ya está configurado para:
+- ✅ Rutas SPA funcionando correctamente
+- ✅ Headers de seguridad
+- ✅ Cache optimizado
+- ✅ Variables de entorno
+
 ## 📝 Notas Importantes
 
 - Los datos se guardan en localStorage por defecto
@@ -122,4 +138,4 @@ Este proyecto es privado y confidencial.
 
 ---
 
-Desarrollado para COMPIN - Sistema de gestión de licencias médicas
+Sistema de gestión de licencias médicas
