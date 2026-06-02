@@ -1,0 +1,385 @@
+.dashboard {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #DEDEDE;
+}
+
+.dashboard-header {
+  background-color: #122539;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-logo {
+  height: 50px;
+  width: auto;
+}
+
+.menu-container {
+  position: relative;
+}
+
+.btn-menu-burger {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  border-radius: 4px;
+}
+
+.btn-menu-burger:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  overflow: hidden;
+  z-index: 1000;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-item {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  color: #333;
+  transition: background-color 0.2s;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:hover {
+  background-color: #f5f5f5;
+}
+
+.menu-item svg {
+  color: #1565c0;
+}
+
+.menu-item-logout svg {
+  color: #c62828;
+}
+
+.btn-logout-dashboard {
+  background-color: #c62828;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-logout-dashboard:hover {
+  background-color: #b71c1c;
+}
+
+.dashboard-main {
+  flex: 1;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.dashboard-title {
+  font-size: 36px;
+  color: #4a4a4a;
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: bold;
+}
+
+.timeline-container {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.timeline-step {
+  display: grid;
+  grid-template-columns: 120px 80px 1fr;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.timeline-step:last-child {
+  margin-bottom: 0;
+}
+
+.step-header {
+  text-align: right;
+}
+
+.step-date {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.step-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.step-verde {
+  background-color: #4caf50;
+  color: white;
+}
+
+.step-azul {
+  background-color: #2196f3;
+  color: white;
+}
+
+.step-gris {
+  background-color: #bdbdbd;
+  color: white;
+}
+
+.step-circle-empty {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.step-connector {
+  position: absolute;
+  left: 159px;
+  top: 80px;
+  width: 4px;
+  height: 40px;
+  z-index: 1;
+}
+
+.connector-verde {
+  background-color: #4caf50;
+}
+
+.connector-azul {
+  background-color: #2196f3;
+}
+
+.connector-gris {
+  background-color: #bdbdbd;
+}
+
+.step-content {
+  padding-left: 10px;
+}
+
+.step-title {
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.progress-bar-container {
+  background: white;
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 40px;
+  background-color: #e0e0e0;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50 0%, #66bb6a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15px solid #4caf50;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+
+.progress-text {
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  z-index: 1;
+}
+
+.last-update {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.dashboard-footer {
+  background-color: #122539;
+  padding: 30px 40px;
+}
+
+.dashboard-footer-content {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-footer-text {
+  color: white;
+  font-size: 14px;
+  margin-bottom: -25px;
+}
+
+.dashboard-footer-logo {
+  height: 86px;
+  width: auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 15px 20px;
+  }
+
+  .dashboard-logo {
+    height: 86px;
+  }
+
+  .dashboard-main {
+    padding: 40px 15px;
+  }
+
+  .dashboard-title {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+
+  .timeline-container {
+    padding: 20px;
+  }
+
+  .timeline-step {
+    grid-template-columns: 80px 60px 1fr;
+    gap: 10px;
+    margin-bottom: 35px;
+  }
+
+  .step-date {
+    font-size: 12px;
+  }
+
+  .step-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .step-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .step-circle-empty {
+    width: 30px;
+    height: 30px;
+  }
+
+  .step-connector {
+    left: 119px;
+    top: 60px;
+    height: 35px;
+  }
+
+  .step-title {
+    font-size: 14px;
+  }
+
+  .progress-bar-container {
+    padding: 20px;
+  }
+
+  .progress-bar {
+    height: 35px;
+  }
+
+  .progress-text {
+    font-size: 14px;
+  }
+
+  .dashboard-footer {
+    padding: 20px;
+  }
+
+  .dashboard-footer-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
