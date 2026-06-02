@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { User, Lock, Eye, EyeOff } from 'lucide-react'
 import Dashboard from './Dashboard'
 import { supabase } from './supabaseClient'
+import Loader from './Loader'
 import './App.css'
 
 function App({ navigate }) {
@@ -43,21 +44,13 @@ function App({ navigate }) {
         .single()
 
       if (error) {
-        // Si falla Supabase, buscar en localStorage como fallback
-        console.log('Trying localStorage fallback...')
-        const savedClients = localStorage.getItem('clients')
-        if (savedClients) {
-          const clients = JSON.parse(savedClients)
-          const client = clients.find(c => c.rut === rut.trim())
-          
-          if (client) {
-            setClientData(client)
-            setIsLoggedIn(true)
-          } else {
-            setError('RUT no encontrado en el sistema')
-          }
-        } else {
+        if (error.code === 'PGRST116') {
+          // No se encontró el cliente
           setError('RUT no encontrado en el sistema')
+        } else {
+          // Otro tipo de error
+          console.error('Supabase error:', error)
+          setError('Error al conectar con el servidor: ' + error.message)
         }
       } else {
         // Cliente encontrado en Supabase
@@ -66,7 +59,7 @@ function App({ navigate }) {
       }
     } catch (error) {
       console.error('Error during login:', error)
-      setError('Error al conectar con el servidor')
+      setError('Error inesperado: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -119,7 +112,9 @@ function App({ navigate }) {
   const showPasswordError = touched.password && !isPasswordValid
 
   return (
-    <div className="app">
+    <>
+      {loading && <Loader message="Verificando credenciales..." />}
+      <div className="app">
       <header className="header">
         <img src="/logo.svg" alt="COMPIN" className="logo" />
       </header>
@@ -193,6 +188,7 @@ function App({ navigate }) {
         </div>
       </footer>
     </div>
+    </>
   )
 }
 

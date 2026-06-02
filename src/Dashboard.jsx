@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { LogOut, CheckCircle, Search, Menu, X, Download } from 'lucide-react'
+import Loader from './Loader'
 import './Dashboard.css'
 
 function Dashboard({ clientData, onLogout }) {
   const [lastUpdate, setLastUpdate] = useState(new Date())
   const [menuOpen, setMenuOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setLastUpdate(new Date())
@@ -83,9 +85,13 @@ function Dashboard({ clientData, onLogout }) {
 
   const handleDownloadLicencia = () => {
     if (clientData.url_licencia) {
-      // Abrir el enlace en una nueva pestaña
-      window.open(clientData.url_licencia, '_blank')
-      setMenuOpen(false)
+      setLoading(true)
+      // Simular un pequeño delay para mostrar el loader
+      setTimeout(() => {
+        window.open(clientData.url_licencia, '_blank')
+        setLoading(false)
+        setMenuOpen(false)
+      }, 500)
     } else {
       alert('No hay una licencia médica disponible para descargar. Por favor contacte al administrador.')
       setMenuOpen(false)
@@ -93,7 +99,9 @@ function Dashboard({ clientData, onLogout }) {
   }
 
   return (
-    <div className="dashboard">
+    <>
+      {loading && <Loader message="Preparando descarga..." />}
+      <div className="dashboard">
       <header className="dashboard-header">
         <img src="/logo.svg" alt="COMPIN" className="dashboard-logo" />
         <div className="menu-container">
@@ -163,6 +171,7 @@ function Dashboard({ clientData, onLogout }) {
         </div>
       </footer>
     </div>
+    </>
   )
 }
 

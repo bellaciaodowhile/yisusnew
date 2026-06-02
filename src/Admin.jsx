@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { LogOut, Plus, Edit2, Trash2, X } from 'lucide-react'
 import { supabase } from './supabaseClient'
+import Loader from './Loader'
 import './Admin.css'
 
 function Admin() {
@@ -10,6 +11,8 @@ function Admin() {
   const [clients, setClients] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [editingClient, setEditingClient] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [loadingMessage, setLoadingMessage] = useState('')
   const [formData, setFormData] = useState({
     rut: '',
     fecha1: '',
@@ -24,41 +27,33 @@ function Admin() {
   })
 
   useEffect(() => {
-    loadClients()
-  }, [])
+    if (isLoggedIn) {
+      loadClients()
+    }
+  }, [isLoggedIn])
 
   const loadClients = async () => {
+    setLoading(true)
+    setLoadingMessage('Cargando clientes...')
+    
     try {
       const { data, error } = await supabase
         .from('clients')
         .select('*')
         .order('created_at', { ascending: false })
 
-      if (error) {
-        console.error('Error loading clients:', error)
-        // Fallback a localStorage si falla Supabase
-        const savedClients = localStorage.getItem('clients')
-        if (savedClients) {
-          setClients(JSON.parse(savedClients))
-        }
-      } else {
-        setClients(data || [])
-        // Sincronizar con localStorage como backup
-        localStorage.setItem('clients', JSON.stringify(data || []))
-      }
+      if (error) throw error
+      
+      setClients(data || [])
     } catch (error) {
-      console.error('Error connecting to Supabase:', error)
-      // Fallback a localStorage
-      const savedClients = localStorage.getItem('clients')
-      if (savedClients) {
-        setClients(JSON.parse(savedClients))
-      }
+      console.error('Error loading clients:', error)
+      alert('Error al cargar clientes: ' + error.message)
+    } finally {
+      setLoading(false)
     }
   }
 
   const saveClients = async (newClients) => {
-    // Guardar en localStorage como backup
-    localStorage.setItem('clients', JSON.stringify(newClients))
     setClients(newClients)
   }
 
@@ -119,6 +114,9 @@ function Admin() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     
+    setLoading(true)
+    setLoadingMessage(editingClient ? 'Actualizando cliente...' : 'Guardando cliente...')
+    
     try {
       if (editingClient) {
         // Actualizar cliente existente
@@ -139,8 +137,6 @@ function Admin() {
           .eq('id', editingClient.id)
 
         if (error) throw error
-        
-        await loadClients()
       } else {
         // Crear nuevo cliente
         const { error } = await supabase
@@ -159,19 +155,23 @@ function Admin() {
           }])
 
         if (error) throw error
-        
-        await loadClients()
       }
       
+      await loadClients()
       closeModal()
     } catch (error) {
       console.error('Error saving client:', error)
       alert('Error al guardar el cliente: ' + error.message)
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleDelete = async (id) => {
     if (confirm('¿Está seguro de eliminar este cliente?')) {
+      setLoading(true)
+      setLoadingMessage('Eliminando cliente...')
+      
       try {
         const { error } = await supabase
           .from('clients')
@@ -184,6 +184,8 @@ function Admin() {
       } catch (error) {
         console.error('Error deleting client:', error)
         alert('Error al eliminar el cliente: ' + error.message)
+      } finally {
+        setLoading(false)
       }
     }
   }
@@ -265,7 +267,9 @@ function Admin() {
   }
 
   return (
-    <div className="admin-panel">
+    <>
+      {loading && <Loader message={loadingMessage} />}
+      <div className="admin-panel">
       <header className="admin-header">
         <img src="/logo.svg" alt="COMPIN" className="admin-logo-small" />
         <h1>Panel de Administración</h1>
@@ -590,6 +594,7 @@ function Admin() {
         </div>
       )}
     </div>
+    </>
   )
 }
 
