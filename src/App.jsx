@@ -17,8 +17,6 @@ function App({ navigate }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [clientData, setClientData] = useState(null)
 
-  useKeepAlive('clients');
-
   const handleLogin = async (e) => {
     e.preventDefault()
     
