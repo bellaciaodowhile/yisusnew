@@ -20,7 +20,6 @@ function App({ navigate }) {
   const handleLogin = async (e) => {
     e.preventDefault()
     
-    // Marcar todos los campos como tocados al intentar enviar
     setTouched({ rut: true, password: true })
     
     // Validar campos
@@ -37,7 +36,6 @@ function App({ navigate }) {
     setShowPasswordHint(false)
 
     try {
-      // Buscar cliente en Supabase
       const { data, error } = await supabase
         .from('clients')
         .select('*')
