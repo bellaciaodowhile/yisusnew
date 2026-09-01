@@ -4,6 +4,7 @@ import Dashboard from './Dashboard'
 import { supabase } from './supabaseClient'
 import Loader from './Loader'
 import './App.css'
+import { useKeepAlive } from './useKeepAlive'
 
 function App({ navigate }) {
   const [rut, setRut] = useState('')
@@ -15,6 +16,8 @@ function App({ navigate }) {
   const [touched, setTouched] = useState({ rut: false, password: false })
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [clientData, setClientData] = useState(null)
+
+  useKeepAlive('clients');
 
   const handleLogin = async (e) => {
     e.preventDefault()
